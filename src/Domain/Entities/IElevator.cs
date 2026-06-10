@@ -7,6 +7,7 @@ public interface IElevator
     public int CurrentCapacity {get; }
 
     public int CurrentFloor {get;}
+
     /// <summary>
     ///  by default there is no requested direction
     /// </summary>

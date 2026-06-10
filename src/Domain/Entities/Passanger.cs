@@ -4,8 +4,11 @@ public class Passenger
     public string? RequestedDirection {get; set;}
     public PassengerStatus Status {get; set;} = PassengerStatus.Waitng;
 
+    public int SourceFloor {get;}
+    public int DestinationFloor {get;}
     public Passenger(int sourceFloor, int destinationFloor)
     {
-        
+        SourceFloor = sourceFloor;
+        DestinationFloor = destinationFloor;
     }
 }

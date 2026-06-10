@@ -17,14 +17,15 @@ public class Floor
 
    }
 
-   public void AddWaitingPassenger()
+   public void AddWaitingPassenger(Passenger passenger)
    {
-      
+      ArgumentNullException.ThrowIfNull(passenger);
+      _waitingPassengers.Add(passenger);
    }
 
-   public void RemoveWaitingPassenger()
+   public void RemoveWaitingPassenger(Passenger passenger)
    {
-      
+      _waitingPassengers.Remove(passenger);
    }
    
  }
