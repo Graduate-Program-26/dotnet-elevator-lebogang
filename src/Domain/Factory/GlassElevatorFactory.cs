@@ -1,7 +1,9 @@
 public class GlassElevatorFactory : IElevatorFactory
 {
-    public override IElevator CreateElevator()
+    private readonly int _MAX_CAPCITY = 5;
+
+    public override IElevator CreateElevator(int startingFloor = 0)
     {
-        return new GlassElevator(5);
+        return new GlassElevator(_MAX_CAPCITY, startingFloor);
     }
 }

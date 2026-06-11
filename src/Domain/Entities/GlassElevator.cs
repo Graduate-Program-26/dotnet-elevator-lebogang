@@ -2,11 +2,9 @@
 public class GlassElevator : ElevatorBase
 {
 
-    public override int MaxCapacity {get; }
-
-    public GlassElevator(int maxCapacity)
+    public GlassElevator(int maxCapacity, int startingFloor) : base(maxCapacity, startingFloor)
     {  
-        MaxCapacity = maxCapacity;
+        
     }
 
 
