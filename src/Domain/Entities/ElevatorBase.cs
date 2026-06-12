@@ -73,6 +73,19 @@ public abstract class ElevatorBase : IElevator
         CurrentCapacity += passengerCount;
     }
 
+    public void DisembarkPassengers(int passengerCount)
+    {
+        if(CurrentCapacity - passengerCount < 0)
+        {
+            // disembark all, not negavtive capacity
+            CurrentCapacity = 0;
+            return;
+        }
+
+        CurrentCapacity -= passengerCount;
+    }
+    
+
     public bool HasCapacity()
     {
         

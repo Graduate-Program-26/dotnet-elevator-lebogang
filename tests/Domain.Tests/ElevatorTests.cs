@@ -93,6 +93,28 @@ public class ElevatorTest
         elevator.FloorRequests.Should().HaveCount(1);
     }
 
+    [Fact]
+    public void Disembark_WhenPassengersLeave_DecreasesCount()
+    {
+        var elevator = _elevatorFactory.CreateElevator();
+        elevator.BoardPassengers(4);
+
+        elevator.DisembarkPassengers(2);
+
+        elevator.CurrentCapacity.Should().Be(2);
+    }
+
+    [Fact]
+    public void Disembark_WhenMoreThanBoarded_DoesNotGoBelowZero()
+    {
+        var elevator = _elevatorFactory.CreateElevator();
+        elevator.BoardPassengers(2);
+
+        elevator.DisembarkPassengers(5); // attempting to disembark more than aboard
+
+        elevator.CurrentCapacity.Should().Be(0);
+    }
+
     [Theory]
     [InlineData(0, 5, ElevatorDirection.Up)]
     [InlineData(8, 3, ElevatorDirection.Down)]
@@ -105,4 +127,5 @@ public class ElevatorTest
         elevator.AddFloorRequest(requestedFloor);
 
         elevator.RequestedDirection.Should().Be(expected);
-    }}
+    }
+}

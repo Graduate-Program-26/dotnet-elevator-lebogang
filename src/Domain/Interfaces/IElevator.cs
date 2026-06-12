@@ -19,7 +19,8 @@ public interface IElevator
     public void MoveOneFloor();
 
     public void BoardPassengers(int passengerCount);
-
+    public void DisembarkPassengers(int passengerCount);
+    
     public ElevatorState State {get; set;}
 
     public bool HasCapacity();
