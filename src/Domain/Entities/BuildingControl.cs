@@ -20,7 +20,7 @@ public class Building
         return _buildingInstance;
     }
 
-    private Building() {}
+    public Building() {}
 
 
     public void Initialise(int totalFloors, IEnumerable<IElevator> elevators)
