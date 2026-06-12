@@ -11,4 +11,17 @@ public class Passenger
         SourceFloor = sourceFloor;
         DestinationFloor = destinationFloor;
     }
+
+
+    public void Board()
+    {
+        if(Status == PassengerStatus.InTransit)
+       
+        Status = PassengerStatus.InTransit;
+    }
+
+    public void Disembark()
+    {
+        Status = PassengerStatus.Arrived;
+    }
 }

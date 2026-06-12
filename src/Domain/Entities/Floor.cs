@@ -4,7 +4,7 @@ public class Floor
    private readonly List<Passenger> _waitingPassengers = new();
 
    public IReadOnlyList<Passenger> WaitingPassengers => _waitingPassengers.AsReadOnly();
-   public int FloorNumber {get; } = 0;
+   public int FloorNumber {get; private set;}
    
    public Floor(int floorNumber )
    {
