@@ -46,9 +46,9 @@ public class BuildingTest
     {
          var building = CreateBuilding();
 
-        building.Initialise(0, CreateElevators());
+       Action act = () => building.Initialise(0, CreateElevators());
 
-        building.IsInitialised.Should().BeFalse();
+       act.Should().Throw<ArgumentOutOfRangeException>();
     }
 
     [Fact]
@@ -70,9 +70,9 @@ public class BuildingTest
 
         building.Initialise(10, CreateElevators());
 
-        var floor = building.GetFloor(12);
+        Action act = () =>  building.GetFloor(12);
 
-        floor.Should().BeNull();
+        act.Should().Throw<ArgumentOutOfRangeException>();
     }
 
 
