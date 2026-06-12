@@ -2,7 +2,7 @@ using FluentAssertions;
 
 public class ElevatorTest
 {
-    private PassengerElevatorFactory _elevatorFactory {get;}
+    private  PassengerElevatorFactory _elevatorFactory = new PassengerElevatorFactory();
 
     
     [Fact]
@@ -69,8 +69,7 @@ public class ElevatorTest
         // MaxCapacity is now full — boarding one more must throw
         Action act = () => elevator.BoardPassengers(1);
 
-        act.Should().Throw<ElevatorCapacityException>()
-            .WithMessage("*capacity*");
+        act.Should().Throw<ElevatorCapacityException>().WithMessage("*capacity*");
     }
 
     [Fact]

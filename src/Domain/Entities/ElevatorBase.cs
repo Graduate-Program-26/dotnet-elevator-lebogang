@@ -1,6 +1,5 @@
 
 
-using System.Linq.Expressions;
 
 public abstract class ElevatorBase : IElevator
 {
@@ -8,8 +7,25 @@ public abstract class ElevatorBase : IElevator
     public   int MaxCapacity { get; }
     public  int CurrentCapacity { get; set; } = 0;
     public  int CurrentFloor { get; protected set; }
-    public  ElevatorDirection? RequestedDirection { get; set; } = ElevatorDirection.Sationary;
-    public  Queue<int> FloorRequests { get; set; } = new();
+    public  ElevatorDirection? RequestedDirection { 
+        get
+            {
+                if(_floorRequests.Count == 0) return ElevatorDirection.Sationary;
+
+                var nextRequest = _floorRequests.Min;
+                
+                if(nextRequest > CurrentFloor) return ElevatorDirection.Up;
+                if(nextRequest < CurrentFloor) return ElevatorDirection.Down;
+
+                return ElevatorDirection.Sationary;
+            }
+        set;
+    } 
+
+
+    // SortedSet prevents duplicates and keeps floors ordered automatically
+    private readonly SortedSet<int> _floorRequests = new();
+    public IReadOnlyCollection<int> FloorRequests => _floorRequests;
     public ElevatorState State {get; set;} = ElevatorState.Idle; 
     protected ElevatorBase(int maxCapacity, int startingFloor)
     {
@@ -19,23 +35,47 @@ public abstract class ElevatorBase : IElevator
 
     public void AddFloorRequest(int floorNumber)
     {
-        
+       _floorRequests.Add(floorNumber);
+
+       if(State == ElevatorState.Idle) State = ElevatorState.Traveling;
     }
 
-    public void MoveOneFloor()
+    public virtual void MoveOneFloor()
     {
-        
+        if(_floorRequests.Count == 0) return; /// there is no jobs, do nothing
+
+        if(RequestedDirection == ElevatorDirection.Up) CurrentFloor++;
+        else if(RequestedDirection == ElevatorDirection.Down) CurrentFloor--;
+
+
+        if(_floorRequests.Contains(CurrentFloor))
+        {
+            _floorRequests.Remove(CurrentFloor);
+            // stop on this floor which passengers would be boarded onto 
+
+            // if its the last serviced request, idle on that floor
+            if(_floorRequests.Count == 0)
+            {
+                State = ElevatorState.Idle;
+                RequestedDirection = ElevatorDirection.Sationary;
+            }
+        }
     }
 
 
     public void BoardPassengers(int passengerCount)
     {
-        
+        if(CurrentCapacity + passengerCount > MaxCapacity)
+        {
+            throw new ElevatorCapacityException(MaxCapacity);
+        }
+
+        CurrentCapacity += passengerCount;
     }
 
     public bool HasCapacity()
     {
         
-        return true;
+        return CurrentCapacity < MaxCapacity;
     }
 }
