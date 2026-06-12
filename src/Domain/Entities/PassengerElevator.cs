@@ -1,9 +1,8 @@
 public class PassengerElevator : ElevatorBase
 {
 
-    public override int MaxCapacity {get;}
-    public PassengerElevator(int maxCapacity)
+    public PassengerElevator(int maxCapacity, int startingFloor): base(maxCapacity, startingFloor)
     {
-        MaxCapacity = maxCapacity; 
+
     }
 }

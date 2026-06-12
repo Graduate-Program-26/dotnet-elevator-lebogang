@@ -1,7 +1,9 @@
 public class PassengerElevatorFactory : IElevatorFactory
 {
-    public override IElevator CreateElevator()
+        private readonly int _MAX_CAPCITY = 10;
+
+    public override IElevator CreateElevator(int startingFloor = 0)
     {
-        return  new PassengerElevator(10);
+        return  new PassengerElevator(_MAX_CAPCITY, startingFloor);
     }
 }

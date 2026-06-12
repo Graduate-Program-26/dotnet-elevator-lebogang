@@ -13,7 +13,15 @@ public interface IElevator
     /// </summary>
     public ElevatorDirection? RequestedDirection {get; set;}
 
-    public Queue<int> FloorRequests {get; set;}
+     public IReadOnlyCollection<int> FloorRequests {get; }
+    public void AddFloorRequest(int floorNumber);
 
+    public void MoveOneFloor();
 
+    public void BoardPassengers(int passengerCount);
+    public void DisembarkPassengers(int passengerCount);
+    
+    public ElevatorState State {get; set;}
+
+    public bool HasCapacity();
 }
