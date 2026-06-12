@@ -11,12 +11,6 @@ public class Floor
       FloorNumber = floorNumber;
    }
 
-   public void MapPassengerToElevator()
-   {
-      // if there is a valid floor request and elevator is on that floor, open elevator and service the relevant requests 
-
-   }
-
    public void AddWaitingPassenger(Passenger passenger)
    {
       ArgumentNullException.ThrowIfNull(passenger);
