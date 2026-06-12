@@ -27,9 +27,9 @@ public class ElevatorTest
     }
 
     [Fact]
-    public void MoveOneFloor_WhenNoRequests_DoesNotMove(3)
+    public void MoveOneFloor_WhenNoRequests_DoesNotMove()
     {
-        var elevator = _elevatorFactory.CreateElevator(1);
+        var elevator = _elevatorFactory.CreateElevator(3);
 
         elevator.MoveOneFloor();
 
@@ -44,8 +44,8 @@ public class ElevatorTest
 
         elevator.MoveOneFloor(); // moves to 5
 
-        elevator.Direction.Should().Be(ElevatorDirection.Stationary);
-        elevator.Status.Should().Be(ElevatorStatus.Idle);
+        elevator.RequestedDirection.Should().Be(ElevatorDirection.Sationary);
+        elevator.State.Should().Be(ElevatorState.Idle);
     }
 
 
@@ -57,7 +57,7 @@ public class ElevatorTest
 
         elevator.BoardPassengers(3);
 
-        elevator.CurrentPassengerCount.Should().Be(3);
+        elevator.CurrentCapacity.Should().Be(3);
     }
 
     [Fact]
@@ -79,7 +79,7 @@ public class ElevatorTest
         var elevator = _elevatorFactory.CreateElevator();
         elevator.BoardPassengers(2);
 
-        elevator.HasCapacity(3).Should().BeTrue();
+        elevator.HasCapacity().Should().BeTrue();
     }
 
 
@@ -105,5 +105,5 @@ public class ElevatorTest
 
         elevator.AddFloorRequest(requestedFloor);
 
-        elevator.Direction.Should().Be(expected);
+        elevator.RequestedDirection.Should().Be(expected);
     }}

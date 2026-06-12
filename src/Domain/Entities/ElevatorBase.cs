@@ -1,5 +1,7 @@
 
 
+using System.Linq.Expressions;
+
 public abstract class ElevatorBase : IElevator
 {
     public  Guid Id { get; } = Guid.NewGuid();
@@ -15,4 +17,25 @@ public abstract class ElevatorBase : IElevator
         CurrentFloor = startingFloor;
     }
 
+    public void AddFloorRequest(int floorNumber)
+    {
+        
+    }
+
+    public void MoveOneFloor()
+    {
+        
+    }
+
+
+    public void BoardPassengers(int passengerCount)
+    {
+        
+    }
+
+    public bool HasCapacity()
+    {
+        
+        return true;
+    }
 }

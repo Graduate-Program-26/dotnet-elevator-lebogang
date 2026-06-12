@@ -15,5 +15,13 @@ public interface IElevator
 
     public Queue<int> FloorRequests {get; set;}
 
+    public void AddFloorRequest(int floorNumber);
 
+    public void MoveOneFloor();
+
+    public void BoardPassengers(int passengerCount);
+
+    public ElevatorState State {get; set;}
+
+    public bool HasCapacity();
 }
