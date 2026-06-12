@@ -43,7 +43,7 @@ public class PassengerTest
         passenger.Board(); // In transit here
         Action act = () =>  passenger.Board();
 
-        act.Should().Throw<InvalidOperationException>().WithMessage("*already*");
+        act.Should().Throw<InvalidOperationException>().WithMessage("*No boarding as passanger already in transit*");
 
     }
 
@@ -54,7 +54,7 @@ public class PassengerTest
 
         Action act = () =>  passenger.Disembark();
 
-        act.Should().Throw<InvalidOperationException>().WithMessage("*boarding*");
+        act.Should().Throw<InvalidOperationException>().WithMessage("*Cannot disembark if waiting*");
 
     }
 
