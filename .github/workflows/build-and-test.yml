@@ -19,18 +19,18 @@ jobs:
           dotnet-version: '10.0.x'
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore ./dotnet_elevator_lebogang.slnx
 
       - name: Build
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build ./dotnet_elevator_lebogang.slnx --no-restore --configuration Release
 
       - name: Test
-        run: dotnet test --no-build --configuration Release
-                         --verbosity normal
+        run: dotnet test ./dotnet_elevator_lebogang.slnx --no-build --configuration Release
+          --verbosity normal
 
       - name: Publish test results
         uses: dorny/test-reporter@v1
-        if: always()   
+        if: always()
         with:
           name: xUnit Tests
           path: '**/*.trx'
