@@ -11,4 +11,18 @@ public class Passenger
         SourceFloor = sourceFloor;
         DestinationFloor = destinationFloor;
     }
+
+
+    public void Board()
+    {
+        if(Status == PassengerStatus.InTransit) throw new InvalidOperationException("No boarding as passanger already in transit");
+       
+        Status = PassengerStatus.InTransit;
+    }
+
+    public void Disembark()
+    {
+        if(Status == PassengerStatus.Waitng)  throw new InvalidOperationException("Cannot disembark if waiting");
+        Status = PassengerStatus.Arrived;
+    }
 }
