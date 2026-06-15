@@ -15,7 +15,7 @@ public class ElevatorTest
         elevator.RequestedDirection.Should().Be(ElevatorDirection.Up);
     }
 
-[Fact]
+    [Fact]
     public void MoveOneFloor_MovesElevatorOneFloorInCurrentDirection()
     {
         var elevator = _elevatorFactory.CreateElevator(1);

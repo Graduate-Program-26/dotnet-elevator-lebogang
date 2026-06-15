@@ -7,9 +7,9 @@
 /// </summary>
 public interface IElevatorRepo
 {
-    IReadOnlyList<ElevatorBase> GetElevators();
+    IReadOnlyList<IElevator> GetElevators();
 
-    ElevatorBase? GetElevator(Guid Id);
+    IElevator? GetElevator(Guid Id);
 
     void Update(ElevatorBase elevator);
 }

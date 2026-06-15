@@ -8,6 +8,7 @@ public interface IElevator
 
     public int CurrentFloor {get;}
 
+      public IReadOnlyList<Passenger> OnboardPassengers {get;}
     /// <summary>
     ///  by default there is no requested direction
     /// </summary>
@@ -19,6 +20,8 @@ public interface IElevator
     public void MoveOneFloor();
 
     public void BoardPassengers(int passengerCount);
+     public void BoardPassengers(IEnumerable<Passenger> passengers);
+      public List<Passenger> DisembarkAtCurrentFloor();
     public void DisembarkPassengers(int passengerCount);
     
     public ElevatorState State {get; set;}
