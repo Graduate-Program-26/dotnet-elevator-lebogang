@@ -42,17 +42,7 @@ public class CommandTests
         const int currentFloor = 3;
         var floor = CreateFloor(currentFloor);
 
-        var mockFloorRepo = new Mock<IFloorRepo>();
-        mockFloorRepo.Setup(repo => repo.GetFloor(3)).Returns(floor);
-
-        var mockElevatorRepo = new Mock<IElevatorRepo>();
-        mockElevatorRepo.Setup(repo => repo.GetElevators()).Returns(new List<IElevator> {elevator});
-
-
-        var mockElevatorStrategy = new Mock<IDispatchController>();
-        mockElevatorStrategy.Setup(strategy => strategy.FindBestElevator(It.IsAny<List<IElevator>>(), currentFloor, ElevatorDirection.Sationary)).Returns(elevator);
-
-        var handler = new MoveElevatorCommandHandler(mockElevatorRepo.Object, mockFloorRepo.Object, mockElevatorStrategy.Object);
+        var handler = new MoveElevatorCommandHandler();
 
         await handler.Handle(new MoveElevatorCommand(elevator, currentFloor), CancellationToken.None);
 
@@ -67,15 +57,9 @@ public class CommandTests
         var floor = CreateFloor(currentFloor);
 
         var passenger = CreatePassenger(source: 1, destination: 3);
-        elevator.BoardPassengers(new List<Passenger> { passenger });
 
-        var mockFloorRepo = new Mock<IFloorRepo>();
-        mockFloorRepo.Setup(repo => repo.GetFloor(currentFloor)).Returns(floor);
 
-        var mockElevatorRepo = new Mock<IElevatorRepo>();
-        mockElevatorRepo.Setup(repo => repo.GetElevators()).Returns(new List<IElevator> { elevator });
-
-        var handler = new DisambarkPassengersCommandHandler(mockElevatorRepo.Object, mockFloorRepo.Object);
+        var handler = new DisambarkPassengersCommandHandler();
 
 
         await handler.Handle(new DisambarkPassengersCommand(currentFloor, elevator),CancellationToken.None);
@@ -94,24 +78,14 @@ d
         var elevator = _elevatorFactory.CreateElevator(1);
         const int currentFloor = 3;
         var floor = CreateFloor(currentFloor);
-        var startFloor = CreateFloor(1);
+       
 
         var passaenger = CreatePassenger(1, 3);
         List<Passenger> passengers = new List<Passenger> {passaenger};
 
-        startFloor.AddWaitingPassenger(passaenger);
+  
 
-        var mockFloorRepo = new Mock<IFloorRepo>();
-        mockFloorRepo.Setup(repo => repo.GetFloor(3)).Returns(floor);
-
-        var mockElevatorRepo = new Mock<IElevatorRepo>();
-        mockElevatorRepo.Setup(repo => repo.GetElevators()).Returns(new List<IElevator> {elevator});
-
-
-        var mockElevatorStrategy = new Mock<IDispatchController>();
-        mockElevatorStrategy.Setup(strategy => strategy.FindBestElevator(It.IsAny<List<IElevator>>(), currentFloor, ElevatorDirection.Sationary)).Returns(elevator);
-
-        var handler = new BoardPassengersCommandHandler(mockElevatorRepo.Object, mockFloorRepo.Object);
+        var handler = new BoardPassengersCommandHandler();
 
         await handler.Handle(new BoardPassengersCommand(passengers, elevator), CancellationToken.None);
 

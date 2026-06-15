@@ -4,22 +4,26 @@ using MediatR;
 
 public class MoveElevatorCommandHandler : IRequestHandler<MoveElevatorCommand, Unit>
 {
-    
-     private readonly IElevatorRepo _elevatorRepo;
-    private readonly IFloorRepo _floorRepo;
-    private readonly IDispatchController _dispatchController;
-    public MoveElevatorCommandHandler(IElevatorRepo elevatorRepo, IFloorRepo floorRepo, IDispatchController dispatchController)
+
+
+    public MoveElevatorCommandHandler()
     {
-        _elevatorRepo = elevatorRepo;
-        _floorRepo = floorRepo;
-        _dispatchController = dispatchController;
+   
     }
 
 
 
-    public Task<Unit> Handle(MoveElevatorCommand command, CancellationToken token )
+    public Task<Unit> Handle(MoveElevatorCommand command, CancellationToken token)
     {
+        if(command.Elevator.FloorRequests.Count == 0) return Unit.Task;
         
+        command.Elevator.State = ElevatorState.Traveling;
+        // set elevator direction
+        command.Elevator.RequestedDirection = command.Elevator.CurrentFloor < command.FloorNumber ? ElevatorDirection.Up : ElevatorDirection.Down;
+
+        command.Elevator.MoveOneFloor();
+
+  
 
         return Unit.Task;
     }
