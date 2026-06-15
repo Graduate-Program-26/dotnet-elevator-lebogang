@@ -19,12 +19,12 @@ public class MoveElevatorCommandHandler : IRequestHandler<MoveElevatorCommand, U
         
         command.Elevator.State = ElevatorState.Traveling;
         // set elevator direction
-        command.Elevator.RequestedDirection = command.Elevator.CurrentFloor < command.FloorNumber ? ElevatorDirection.Up : ElevatorDirection.Down;
+        command.Elevator.RequestedDirection = command.Elevator.CurrentFloor < command.Elevator.FloorRequests.First() ? ElevatorDirection.Up : ElevatorDirection.Down;
 
         command.Elevator.MoveOneFloor();
 
   
-
+ 
         return Unit.Task;
     }
 }

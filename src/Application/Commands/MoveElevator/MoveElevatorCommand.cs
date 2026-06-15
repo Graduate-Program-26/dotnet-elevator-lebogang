@@ -1,3 +1,3 @@
 using MediatR;
 
-public record MoveElevatorCommand(IElevator Elevator, int FloorNumber) : IRequest<Unit>;
+public record MoveElevatorCommand(IElevator Elevator) : IRequest<Unit>;
