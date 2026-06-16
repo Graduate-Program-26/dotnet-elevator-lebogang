@@ -9,7 +9,7 @@ public class PassengerTest
     {
         var passenger = CreatePassenger();
 
-        passenger.Status.Should().Be(PassengerStatus.Waitng);
+        passenger.Status.Should().Be(PassengerStatus.Waiting);
     }
 
 

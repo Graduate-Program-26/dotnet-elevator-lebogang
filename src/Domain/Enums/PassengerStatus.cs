@@ -1,6 +1,6 @@
 public enum PassengerStatus
 {
-    Waitng,
+    Waiting,
     InTransit,
     Arrived
 }

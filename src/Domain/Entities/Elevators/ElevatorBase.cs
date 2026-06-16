@@ -98,13 +98,15 @@ public abstract class ElevatorBase : IElevator
     public void BoardPassengers(IEnumerable<Passenger> passengers)
     {
         var list = passengers.ToList();
-        if (!HasCapacity()) throw new ElevatorCapacityException(MaxCapacity);
 
-        _onboardPassengers.AddRange(list);
+        if(list.Count == 0) return;
+
+        if (CurrentCapacity + list.Count > MaxCapacity) throw new ElevatorCapacityException(MaxCapacity);
+
         foreach (var passenger in list)
         {
+            _onboardPassengers.Add(passenger);
             passenger.Board();
-            passenger.Status = PassengerStatus.InTransit;
             AddFloorRequest(passenger.DestinationFloor);
 
         }
@@ -114,7 +116,7 @@ public abstract class ElevatorBase : IElevator
     {
         var arriving = _onboardPassengers.Where(passenger => passenger.DestinationFloor == CurrentFloor).ToList();
 
-        _onboardPassengers.RemoveAll(passenger => arriving.Contains(passenger));
+        _onboardPassengers.RemoveAll(arriving.Contains);
         return arriving;
     }
 

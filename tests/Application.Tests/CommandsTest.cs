@@ -9,7 +9,6 @@ public class CommandTests
 
     private static Floor CreateFloor(int floorNumber = 1)  => new Floor(floorNumber);
     private readonly MoveElevatorCommandHandler _moveElevatorHandler = new();
-    private readonly BoardPassengersCommandHandler _boardPassengersdHandler = new();
     private readonly DisambarkPassengersCommandHandler _disambarkPassengersHandler = new();
 
     [Fact]
@@ -118,19 +117,82 @@ public class CommandTests
     }
 
     [Fact]
-    public async Task Handle_BoardPassenegers_FromFloor() // pick up passangers
+    public async Task Handle_BoardPassengers_FromFloor()
     {
-        var elevator = _elevatorFactory.CreateElevator(1);
-        const int currentFloor = 3;
-        var floor = CreateFloor(currentFloor);
-       
-        var passaenger = CreatePassenger(1, 3);
-        List<Passenger> passengers = new List<Passenger> {passaenger};
+        var elevator = _elevatorFactory.CreateElevator(startingFloor: 3);
+        const int floorNumber = 3;
+        var floor = CreateFloor(floorNumber);
 
-        await _boardPassengersdHandler.Handle(new BoardPassengersCommand(passengers, elevator), CancellationToken.None);
+        var passenger = CreatePassenger(source: 3, destination: 7);
+        floor.AddWaitingPassenger(passenger);
 
-        elevator.FloorRequests.Should().Contain(currentFloor);
-        elevator.OnboardPassengers.Should().Contain(passaenger);
+        var mockFloorRepo = new Mock<IFloorRepo>();
+        mockFloorRepo.Setup(r => r.GetFloor(floorNumber)).Returns(floor);
+
+        var handler = new BoardPassengersCommandHandler(mockFloorRepo.Object);
+
+        await handler.Handle(new BoardPassengersCommand(new List<Passenger> { passenger },elevator),CancellationToken.None);
+
+        elevator.CurrentCapacity.Should().Be(1);
+
+        elevator.FloorRequests.Should().Contain(7);
+
+        passenger.Status.Should().Be(PassengerStatus.InTransit);
+
+        floor.WaitingPassengers.Should().NotContain(passenger);
+    }
+
+    [Fact]
+    public async Task Handle_WhenElevatorFull_NoPassengersBoarded()
+    {
+        var elevator = _elevatorFactory.CreateElevator(startingFloor: 3);
+
+        // fill the elevator to capacity
+        var existingPassengers = Enumerable.Range(0, elevator.MaxCapacity).Select(_ => CreatePassenger(source: 1, destination: 8)).ToList();
+        elevator.BoardPassengers(existingPassengers);
+
+        var waitingPassenger = CreatePassenger(source: 3, destination: 7);
+        var floor = CreateFloor(3);
+        floor.AddWaitingPassenger(waitingPassenger);
+
+        var mockFloorRepo = new Mock<IFloorRepo>();
+        mockFloorRepo.Setup(r => r.GetFloor(3)).Returns(floor);
+
+        var handler = new BoardPassengersCommandHandler(mockFloorRepo.Object);
+
+        await handler.Handle(new BoardPassengersCommand(new List<Passenger> { waitingPassenger },elevator),CancellationToken.None);
+
+
+        floor.WaitingPassengers.Should().Contain(waitingPassenger);
+        waitingPassenger.Status.Should().Be(PassengerStatus.Waiting);
+    }
+
+    [Fact]
+    public async Task Handle_PartialBoarding_OnlyFitsAvailableSpace()
+    {
+        var elevator = _elevatorFactory.CreateElevator(startingFloor: 3);
+
+        // board enough to leave only 1 space
+        var existing = Enumerable.Range(0, elevator.MaxCapacity - 1).Select(_ => CreatePassenger(source: 1, destination: 8)).ToList();
+        elevator.BoardPassengers(existing);
+
+   
+        var passengerA = CreatePassenger(source: 3, destination: 5);
+        var passengerB = CreatePassenger(source: 3, destination: 6);
+        var floor = CreateFloor(3);
+        floor.AddWaitingPassenger(passengerA);
+        floor.AddWaitingPassenger(passengerB);
+
+        var mockFloorRepo = new Mock<IFloorRepo>();
+        mockFloorRepo.Setup(r => r.GetFloor(3)).Returns(floor);
+
+        var handler = new BoardPassengersCommandHandler(mockFloorRepo.Object);
+
+        await handler.Handle(new BoardPassengersCommand(new List<Passenger> { passengerA, passengerB },elevator),CancellationToken.None);
+
+        elevator.CurrentCapacity.Should().Be(elevator.MaxCapacity);
+
+        floor.WaitingPassengers.Should().HaveCount(1);
     }
 
    

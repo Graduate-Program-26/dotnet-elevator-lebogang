@@ -8,7 +8,7 @@ public class Passenger
             return SourceFloor < DestinationFloor ? ElevatorDirection.Up : ElevatorDirection.Down;
         } set;
     }
-    public PassengerStatus Status {get; set;} = PassengerStatus.Waitng;
+    public PassengerStatus Status {get; set;} = PassengerStatus.Waiting;
 
     public int SourceFloor {get;}
     public int DestinationFloor {get;}
@@ -28,7 +28,7 @@ public class Passenger
 
     public void Disembark()
     {
-        if(Status == PassengerStatus.Waitng)  throw new InvalidOperationException("Cannot disembark if waiting");
+        if(Status == PassengerStatus.Waiting)  throw new InvalidOperationException("Cannot disembark if waiting");
         Status = PassengerStatus.Arrived;
     }
 }
