@@ -102,7 +102,12 @@ public abstract class ElevatorBase : IElevator
 
         _onboardPassengers.AddRange(list);
         foreach (var passenger in list)
+        {
+            passenger.Board();
+            passenger.Status = PassengerStatus.InTransit;
             AddFloorRequest(passenger.DestinationFloor);
+
+        }
     }
 
     public List<Passenger> DisembarkAtCurrentFloor()

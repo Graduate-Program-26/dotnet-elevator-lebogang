@@ -22,11 +22,10 @@ public class RequestElevatorCommandHandler : IRequestHandler<RequestElevatorComm
         if(elevator is null)
         {
             // retry and wait
-        } else
-        {
-            elevator.AddFloorRequest(command.FloorNumber);
+            return Unit.Task;
         }
-
+        
+        elevator.AddFloorRequest(command.FloorNumber);
         return Unit.Task;
     }
 }

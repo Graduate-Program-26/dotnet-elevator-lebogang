@@ -27,7 +27,12 @@ public class CommandTests
 
 
         var mockElevatorStrategy = new Mock<IDispatchController>();
-        mockElevatorStrategy.Setup(strategy => strategy.FindBestElevator(It.IsAny<List<IElevator>>(), currentFloor, ElevatorDirection.Stationary)).Returns(elevator);
+        mockElevatorStrategy
+            .Setup(s => s.FindBestElevator(
+                It.IsAny<List<IElevator>>(),
+                It.IsAny<int>(),
+                It.IsAny<ElevatorDirection>()))
+            .Returns(elevator);
 
         var handler = new RequestElevatorCommandHandler(mockElevatorRepo.Object, mockFloorRepo.Object, mockElevatorStrategy.Object);
         
@@ -44,7 +49,7 @@ public class CommandTests
         const int currentFloor = 3;
         var floor = CreateFloor(currentFloor);
 
-      
+        elevator.AddFloorRequest(currentFloor);
 
         await _moveElevatorHandler.Handle(new MoveElevatorCommand(elevator), CancellationToken.None);
 
@@ -101,6 +106,7 @@ public class CommandTests
 
         var passenger = CreatePassenger(source: 1, destination: 3);
 
+        elevator.BoardPassengers(new List<Passenger> { passenger });
 
         await _disambarkPassengersHandler.Handle(new DisambarkPassengersCommand(currentFloor, elevator),CancellationToken.None);
 

@@ -7,7 +7,7 @@ public class QueriesTest
     private Floor CreateFloor(int floorNumber = 1) => new Floor(floorNumber);
 
     [Fact]
-    public async Task Handel_GetSystemStatus()
+    public async Task Handle_GetSystemStatus()
     {
         var elevatorOne = _elevatorFactory.CreateElevator(1);
         var elevatorTwo = _elevatorFactory.CreateElevator(5);
@@ -70,11 +70,10 @@ public class QueriesTest
     [Fact]
     public async Task Handle_GetElevatorStatusById()
     {
-        var floor = CreateFloor(3);
         var elevator = _elevatorFactory.CreateElevator();
 
         var mockElevatorRepo = new Mock<IElevatorRepo>();
-        mockElevatorRepo.Setup(r => r.GetElevators()).Returns(new List<IElevator> { elevator });
+        mockElevatorRepo.Setup(r => r.GetElevator(elevator.Id)).Returns(elevator);
 
         var handler = new GetElevatorStateQueryHandler(mockElevatorRepo.Object);
 

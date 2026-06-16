@@ -17,11 +17,8 @@ public class DisambarkPassengersCommandHandler : IRequestHandler<DisambarkPassen
         foreach (var passenger in disembarked)
         {
             passenger.Disembark();
-            passenger.Status = PassengerStatus.Arrived;
         }
-      
-        
-        
+    
         return Unit.Task;
     }
 }
