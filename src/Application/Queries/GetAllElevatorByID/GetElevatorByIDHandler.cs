@@ -4,17 +4,35 @@ public class GetElevatorStateQueryHandler : IRequestHandler<GetElevatorStateQuer
 {
     
     private readonly IElevatorRepo _elevatorRepo;
-    private readonly IFloorRepo _floorRepo;
 
-    public GetElevatorStateQueryHandler(IElevatorRepo elevatorRepo, IFloorRepo floorRepo)
+
+    public GetElevatorStateQueryHandler(IElevatorRepo elevatorRepo)
     {
         _elevatorRepo = elevatorRepo;
-        _floorRepo = floorRepo;
     }
 
 
     public Task<ElevatorStateDto> Handle(GetElevatorStateQuery query, CancellationToken token)
     {
-        
+        var elevator = _elevatorRepo.GetElevator(query.Id);
+
+        if(elevator is null) throw new InvalidElevatorIdException(query.Id);
+
+        return Task.FromResult(MapElevators(elevator));
+    }
+
+
+    private static ElevatorStateDto MapElevators(IElevator elevator)
+    {
+        return new(
+            Id: elevator.Id,
+            CurrentFloor: elevator.CurrentFloor,
+            Direction: elevator.RequestedDirection ?? ElevatorDirection.Up,
+            State: elevator.State,
+            CurrentCapacity: elevator.CurrentCapacity,
+            MaxCapacity: elevator.MaxCapacity,
+            FloorRequests: elevator.FloorRequests.ToList(),
+            OnboardPassengerDestinations: elevator.OnboardPassengers.Select(passeneger => passeneger.DestinationFloor).ToList();
+        );
     }
 }

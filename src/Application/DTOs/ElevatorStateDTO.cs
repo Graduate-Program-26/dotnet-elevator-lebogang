@@ -7,5 +7,5 @@ public record ElevatorStateDto(
     int CurrentCapacity,
     int MaxCapacity,
     IReadOnlyList<int> FloorRequests,
-    IReadOnlyList<string> OnboardPassengerDestinations
+    IReadOnlyList<int> OnboardPassengerDestinations
 );
