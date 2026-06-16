@@ -34,7 +34,7 @@ public class GetSystemStateQueryHandler : IRequestHandler<GetSystemStateQuery, S
         return new(
             Id:               elevator.Id,
             CurrentFloor:     elevator.CurrentFloor,
-            Direction:        elevator.RequestedDirection ?? ElevatorDirection.Up,
+            Direction:        elevator.RequestedDirection,
             State:            elevator.State,
             CurrentCapacity:  elevator.CurrentCapacity,
             MaxCapacity:      elevator.MaxCapacity,

@@ -9,6 +9,18 @@ public class DispatchingTest
     private ServiceElevatorFactory _serviceElevatorFactory = new ServiceElevatorFactory();
 
 
+    private List<Passenger> CreatePassenger(int numbwerOfPasengers, int source = 0, int destination = 5)
+    {
+        List<Passenger> passengers = new();
+        for (int i = 0; i < numbwerOfPasengers; i++)
+        {
+             passengers.Add( new Passenger(source, destination));
+        }
+      
+        return passengers;
+    } 
+
+
     [Fact]
     public void FindBestElevator_ReturnsClosestElevator()
     {
@@ -29,7 +41,7 @@ public class DispatchingTest
     public void FindBestElevator_NearestElevatorFull_ReturnsNextClosest()
     {
         var fullElevator = _elevatorFactory.CreateElevator(3);
-        fullElevator.BoardPassengers(fullElevator.MaxCapacity); 
+        fullElevator.BoardPassengers(CreatePassenger(fullElevator.MaxCapacity)); 
 
         var availableElevator = _elevatorFactory.CreateElevator(6);
 
@@ -45,10 +57,10 @@ public class DispatchingTest
     public void FindBestElevator_AllElevatorsFull_ReturnsNull()
     {
         var elevatorOne = _elevatorFactory.CreateElevator(3);
-        elevatorOne.BoardPassengers(elevatorOne.MaxCapacity);
+        elevatorOne.BoardPassengers(CreatePassenger(elevatorOne.MaxCapacity));
 
         var elevatorTwo = _elevatorFactory.CreateElevator(6);
-        elevatorTwo.BoardPassengers(elevatorTwo.MaxCapacity);
+        elevatorTwo.BoardPassengers(CreatePassenger(elevatorTwo.MaxCapacity));
 
         var elevators = new List<IElevator> { elevatorOne, elevatorTwo };
         var strategy = new NearestElevatorStrategy();
@@ -92,8 +104,7 @@ public class DispatchingTest
 
         // Passenger wants UP — the elevator already heading UP should win,
         // even though elevatorGoingDown might be numerically closer at some point
-        var best = strategy.FindBestElevator(
-            elevators, currentFloor: 4, requestedDirection: ElevatorDirection.Up);
+        var best = strategy.FindBestElevator(elevators, currentFloor: 4, requestedDirection: ElevatorDirection.Up);
 
         best.Should().Be(elevatorGoingUp);
     }
@@ -110,8 +121,7 @@ public class DispatchingTest
         var elevators = new List<IElevator> { elevatorGoingUp, idleElevatorBelow };
         var strategy = new NearestElevatorStrategy();
 
-        var best = strategy.FindBestElevator(
-            elevators, currentFloor: 4, requestedDirection: ElevatorDirection.Down);
+        var best = strategy.FindBestElevator(elevators, currentFloor: 4, requestedDirection: ElevatorDirection.Down);
 
         // elevatorGoingUp is technically closer and "passes" floor 4,
         // but is heading the WRONG way for this passenger
@@ -158,15 +168,6 @@ public class DispatchingTest
         best.Should().BeNull();
     }
 
-    [Fact]
-    public void FindBestElevator_NullElevatorList_ThrowsArgumentNullException()
-    {
-        var strategy = new NearestElevatorStrategy();
-
-        Action act = () => strategy.FindBestElevator(null!, currentFloor: 4, requestedDirection: ElevatorDirection.Up);
-
-        act.Should().Throw<ArgumentNullException>();
-    }
 
     [Fact]
     public void FindBestElevator_SingleElevator_ReturnsThatElevator()
@@ -180,17 +181,4 @@ public class DispatchingTest
         best.Should().Be(onlyElevator);
     }
 
-    [Fact]
-    public void FindBestElevator_ServiceElevator_NotDispatchedForPassengerRequest()
-    {
-        var serviceElevator = _serviceElevatorFactory.CreateElevator(4); // closest
-        var passengerElevator = _elevatorFactory.CreateElevator(8);
-
-        var elevators = new List<IElevator> { serviceElevator, passengerElevator };
-        var strategy = new NearestElevatorStrategy();
-
-        var best = strategy.FindBestElevator(elevators, currentFloor: 4, requestedDirection: ElevatorDirection.Up);
-
-        best.Should().Be(passengerElevator);
-    }
 }

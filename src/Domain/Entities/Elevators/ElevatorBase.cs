@@ -10,26 +10,26 @@ public abstract class ElevatorBase : IElevator
         {
           return   _onboardPassengers.Count;
         } set;
- } 
+    } 
+
     public int CurrentFloor { get; protected set; }
 
 
     private readonly List<Passenger> _onboardPassengers = new();
     public IReadOnlyList<Passenger> OnboardPassengers => _onboardPassengers.AsReadOnly();
-    public ElevatorDirection? RequestedDirection
+    public ElevatorDirection RequestedDirection
     {
         get
         {
-            if (_floorRequests.Count == 0) return ElevatorDirection.Sationary;
+            if (_floorRequests.Count == 0) return ElevatorDirection.Stationary;
 
             var nextRequest = _floorRequests.Min;
 
             if (nextRequest > CurrentFloor) return ElevatorDirection.Up;
             if (nextRequest < CurrentFloor) return ElevatorDirection.Down;
 
-            return ElevatorDirection.Sationary;
+            return ElevatorDirection.Stationary;
         }
-        set;
     }
 
 
@@ -67,7 +67,7 @@ public abstract class ElevatorBase : IElevator
             if (_floorRequests.Count == 0)
             {
                 State = ElevatorState.Idle;
-                RequestedDirection = ElevatorDirection.Sationary;
+               
             }
         }
     }

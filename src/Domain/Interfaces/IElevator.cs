@@ -12,7 +12,7 @@ public interface IElevator
     /// <summary>
     ///  by default there is no requested direction
     /// </summary>
-    public ElevatorDirection? RequestedDirection {get; set;}
+    public ElevatorDirection RequestedDirection {get;  }
 
      public IReadOnlyCollection<int> FloorRequests {get; }
     public void AddFloorRequest(int floorNumber);

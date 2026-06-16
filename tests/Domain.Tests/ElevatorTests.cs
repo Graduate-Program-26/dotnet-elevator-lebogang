@@ -44,7 +44,7 @@ public class ElevatorTest
 
         elevator.MoveOneFloor(); // moves to 5
 
-        elevator.RequestedDirection.Should().Be(ElevatorDirection.Sationary);
+        elevator.RequestedDirection.Should().Be(ElevatorDirection.Stationary);
         elevator.State.Should().Be(ElevatorState.Idle);
     }
 
@@ -118,7 +118,7 @@ public class ElevatorTest
     [Theory]
     [InlineData(0, 5, ElevatorDirection.Up)]
     [InlineData(8, 3, ElevatorDirection.Down)]
-    [InlineData(5, 5, ElevatorDirection.Sationary)]
+    [InlineData(5, 5, ElevatorDirection.Stationary)]
     public void AddFloorRequest_SetsCorrectDirection(
         int startFloor, int requestedFloor, ElevatorDirection expected)
     {

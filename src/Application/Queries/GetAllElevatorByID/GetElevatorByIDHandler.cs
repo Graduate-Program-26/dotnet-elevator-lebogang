@@ -27,12 +27,12 @@ public class GetElevatorStateQueryHandler : IRequestHandler<GetElevatorStateQuer
         return new(
             Id: elevator.Id,
             CurrentFloor: elevator.CurrentFloor,
-            Direction: elevator.RequestedDirection ?? ElevatorDirection.Up,
+            Direction: elevator.RequestedDirection,
             State: elevator.State,
             CurrentCapacity: elevator.CurrentCapacity,
             MaxCapacity: elevator.MaxCapacity,
             FloorRequests: elevator.FloorRequests.ToList(),
-            OnboardPassengerDestinations: elevator.OnboardPassengers.Select(passeneger => passeneger.DestinationFloor).ToList();
+            OnboardPassengerDestinations: elevator.OnboardPassengers.Select(passeneger => passeneger.DestinationFloor).ToList()
         );
     }
 }

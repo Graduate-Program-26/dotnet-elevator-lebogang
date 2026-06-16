@@ -27,7 +27,7 @@ public class CommandTests
 
 
         var mockElevatorStrategy = new Mock<IDispatchController>();
-        mockElevatorStrategy.Setup(strategy => strategy.FindBestElevator(It.IsAny<List<IElevator>>(), currentFloor, ElevatorDirection.Sationary)).Returns(elevator);
+        mockElevatorStrategy.Setup(strategy => strategy.FindBestElevator(It.IsAny<List<IElevator>>(), currentFloor, ElevatorDirection.Stationary)).Returns(elevator);
 
         var handler = new RequestElevatorCommandHandler(mockElevatorRepo.Object, mockFloorRepo.Object, mockElevatorStrategy.Object);
         
