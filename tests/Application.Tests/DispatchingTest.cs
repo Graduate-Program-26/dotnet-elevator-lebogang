@@ -9,7 +9,7 @@ public class DispatchingTest
     private ServiceElevatorFactory _serviceElevatorFactory = new ServiceElevatorFactory();
 
 
-    private List<Passenger> CreatePassenger(int numbwerOfPasengers, int source = 0, int destination = 5)
+    private List<Passenger> CreatePassengers(int numbwerOfPasengers, int source = 0, int destination = 5)
     {
         List<Passenger> passengers = new();
         for (int i = 0; i < numbwerOfPasengers; i++)
@@ -41,7 +41,7 @@ public class DispatchingTest
     public void FindBestElevator_NearestElevatorFull_ReturnsNextClosest()
     {
         var fullElevator = _elevatorFactory.CreateElevator(3);
-        fullElevator.BoardPassengers(CreatePassenger(fullElevator.MaxCapacity)); 
+        fullElevator.BoardPassengers(CreatePassengers(fullElevator.MaxCapacity)); 
 
         var availableElevator = _elevatorFactory.CreateElevator(6);
 
@@ -57,10 +57,10 @@ public class DispatchingTest
     public void FindBestElevator_AllElevatorsFull_ReturnsNull()
     {
         var elevatorOne = _elevatorFactory.CreateElevator(3);
-        elevatorOne.BoardPassengers(CreatePassenger(elevatorOne.MaxCapacity));
+        elevatorOne.BoardPassengers(CreatePassengers(elevatorOne.MaxCapacity));
 
         var elevatorTwo = _elevatorFactory.CreateElevator(6);
-        elevatorTwo.BoardPassengers(CreatePassenger(elevatorTwo.MaxCapacity));
+        elevatorTwo.BoardPassengers(CreatePassengers(elevatorTwo.MaxCapacity));
 
         var elevators = new List<IElevator> { elevatorOne, elevatorTwo };
         var strategy = new NearestElevatorStrategy();

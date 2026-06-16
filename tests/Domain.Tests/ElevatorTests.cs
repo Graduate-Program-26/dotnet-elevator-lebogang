@@ -3,8 +3,20 @@ using FluentAssertions;
 public class ElevatorTest
 {
     private  PassengerElevatorFactory _elevatorFactory = new PassengerElevatorFactory();
+    private Passenger CreatePassenger(int source = 0, int destination = 5) => new Passenger(source, destination);
+    private static void BoardPassengers(IElevator elevator, params Passenger[] passengers) => elevator.BoardPassengers(passengers.ToList());
 
-    
+    private List<Passenger> CreatePassengers(int numbwerOfPasengers, int source = 0, int destination = 5)
+    {
+        List<Passenger> passengers = new();
+        for (int i = 0; i < numbwerOfPasengers; i++)
+        {
+             passengers.Add( new Passenger(source, destination));
+        }
+      
+        return passengers;
+    } 
+
     [Fact]
     public void MoveOneFloor_WhenRequestFloorAbove_DirectionIsUp()
     {
@@ -55,7 +67,7 @@ public class ElevatorTest
     {
         var elevator = _elevatorFactory.CreateElevator();
 
-        elevator.BoardPassengers(3);
+        elevator.BoardPassengers(CreatePassengers(3));
 
         elevator.CurrentCapacity.Should().Be(3);
     }
@@ -64,7 +76,7 @@ public class ElevatorTest
     public void BoardPassengers_WhenExceedsCapacity_ThrowsException()
     {
         var elevator =_elevatorFactory.CreateElevator();
-        elevator.BoardPassengers(elevator.MaxCapacity);
+        elevator.BoardPassengers(CreatePassengers(elevator.MaxCapacity));
 
         // MaxCapacity is now full — boarding one more must throw
         Action act = () => elevator.BoardPassengers(1);
@@ -76,7 +88,7 @@ public class ElevatorTest
     public void HasCapacity_WhenSpaceAvailable_ReturnsTrue()
     {
         var elevator = _elevatorFactory.CreateElevator();
-        elevator.BoardPassengers(2);
+        elevator.BoardPassengers(CreatePassengers(2));
 
         elevator.HasCapacity().Should().BeTrue();
     }
@@ -94,25 +106,44 @@ public class ElevatorTest
     }
 
     [Fact]
-    public void Disembark_WhenPassengersLeave_DecreasesCount()
+    public void DisembarkAtCurrentFloor_PassengerAtDestination_DecreaseCapacity()
     {
-        var elevator = _elevatorFactory.CreateElevator();
-        elevator.BoardPassengers(4);
+        var elevator = _elevatorFactory.CreateElevator(startingFloor: 3);
+        var passenger = CreatePassenger(source: 1, destination: 3);
+        BoardPassengers(elevator, passenger);
 
-        elevator.DisembarkPassengers(2);
+        elevator.DisembarkAtCurrentFloor();
 
-        elevator.CurrentCapacity.Should().Be(2);
+        elevator.CurrentCapacity.Should().Be(0);
+    }
+   
+    [Fact]
+    public void DisembarkAtCurrentFloor_PassengerAtDestination_IsRemoved()
+    {
+        var elevator = _elevatorFactory.CreateElevator(startingFloor: 3);
+        var passenger = CreatePassenger(source: 1, destination: 3);
+        BoardPassengers(elevator, passenger);
+
+        elevator.DisembarkAtCurrentFloor();
+
+        elevator.OnboardPassengers.Should().NotContain(passenger);
     }
 
     [Fact]
-    public void Disembark_WhenMoreThanBoarded_DoesNotGoBelowZero()
+    public void DisembarkAtCurrentFloor_OnlyMatchingDestination_Disembarks()
     {
-        var elevator = _elevatorFactory.CreateElevator();
-        elevator.BoardPassengers(2);
+        var elevator = _elevatorFactory.CreateElevator(startingFloor: 3);
 
-        elevator.DisembarkPassengers(5); // attempting to disembark more than aboard
+        var arriving  = CreatePassenger(source: 1, destination: 3); // gets off here
+        var continuing = CreatePassenger(source: 1, destination: 7); // stays on
 
-        elevator.CurrentCapacity.Should().Be(0);
+        BoardPassengers(elevator, arriving, continuing);
+
+        elevator.DisembarkAtCurrentFloor();
+
+        elevator.OnboardPassengers.Should().NotContain(arriving);
+        elevator.OnboardPassengers.Should().Contain(continuing);
+        elevator.CurrentCapacity.Should().Be(1);
     }
 
     [Theory]
