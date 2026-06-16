@@ -102,13 +102,12 @@ public class CommandTests
         var passenger = CreatePassenger(source: 1, destination: 3);
 
 
-        await _boardPassengersdHandler.Handle(new DisambarkPassengersCommand(currentFloor, elevator),CancellationToken.None);
+        await _disambarkPassengersHandler.Handle(new DisambarkPassengersCommand(currentFloor, elevator),CancellationToken.None);
 
         elevator.OnboardPassengers.Should().NotContain(passenger);
 
         elevator.CurrentCapacity.Should().Be(0);
 
-d
         passenger.Status.Should().Be(PassengerStatus.Arrived);        
     }
 
@@ -122,7 +121,7 @@ d
         var passaenger = CreatePassenger(1, 3);
         List<Passenger> passengers = new List<Passenger> {passaenger};
 
-        await _disambarkPassengersHandler.Handle(new BoardPassengersCommand(passengers, elevator), CancellationToken.None);
+        await _boardPassengersdHandler.Handle(new BoardPassengersCommand(passengers, elevator), CancellationToken.None);
 
         elevator.FloorRequests.Should().Contain(currentFloor);
         elevator.OnboardPassengers.Should().Contain(passaenger);

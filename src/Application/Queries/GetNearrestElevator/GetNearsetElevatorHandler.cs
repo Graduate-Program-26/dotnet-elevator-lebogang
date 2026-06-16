@@ -15,7 +15,7 @@ public class GetNearestElevatorQueryHandler : IRequestHandler<GetNearestElevator
     public Task<IElevator> Handle(GetNearestElevatorQuery query, CancellationToken token)
     {
         
-
+        
         // inject fetching logic
 
     }
