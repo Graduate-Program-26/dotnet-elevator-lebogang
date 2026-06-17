@@ -14,6 +14,7 @@ public class MediatRPipeline
     {
         var services = new ServiceCollection();
 
+        services.AddLogging();
         services.AddApplicationServices();
 
         var mockElevatorRepo = new Mock<IElevatorRepo>();
