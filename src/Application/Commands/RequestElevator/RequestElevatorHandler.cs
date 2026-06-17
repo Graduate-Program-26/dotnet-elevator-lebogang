@@ -17,6 +17,9 @@ public class RequestElevatorCommandHandler : IRequestHandler<RequestElevatorComm
 
     public Task<Unit> Handle(RequestElevatorCommand command, CancellationToken token)
     {
+
+        if(command.FloorNumber < 0) throw new InvalidElevatorRequestException();
+        
         var elevator = _dispatchController.FindBestElevator(_elevatorRepo.GetElevators().ToList(), command.FloorNumber, command.Direction);
         
         if(elevator is null)

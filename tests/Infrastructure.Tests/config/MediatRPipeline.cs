@@ -16,16 +16,6 @@ public class MediatRPipeline
 
         services.AddLogging();
         services.AddApplicationServices();
-
-        var mockElevatorRepo = new Mock<IElevatorRepo>();
-        mockElevatorRepo.Setup(repo => repo.GetElevators()).Returns(new List<IElevator>
-        {
-            _passengerElevatorFactory.CreateElevator(0)
-        });
-
-        mockElevatorRepo.Setup(repo => repo.GetElevator(It.IsAny<Guid>())).Returns((IElevator?)null);
-        
-
         var mockFloorRepo = new Mock<IFloorRepo>();
         mockFloorRepo.Setup(repo => repo.GetFloors()).Returns(new List<Floor> {CreateFloor(0)} );
         mockFloorRepo.Setup(repo => repo.GetFloor(It.IsAny<int>()));
@@ -33,11 +23,12 @@ public class MediatRPipeline
         var mockDispatch = new Mock<IDispatchController>();
         mockDispatch.Setup(dispatch => dispatch.FindBestElevator(It.IsAny<List<IElevator>>(), It.IsAny<int>(), It.IsAny<ElevatorDirection>())).Returns(_passengerElevatorFactory.CreateElevator(0));
 
-        services.AddSingleton(mockElevatorRepo.Object);
         services.AddSingleton(mockFloorRepo.Object);
         services.AddSingleton(mockDispatch.Object);
 
-
+        // tests such as those that need IRepo can confgure their own registrations such thatdependicies are more clear in the test
+        configure?.Invoke(services);
+        
         return services.BuildServiceProvider();
     }
 

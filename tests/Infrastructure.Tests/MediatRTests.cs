@@ -10,7 +10,16 @@ public class MediatRTests
     [Fact]
     public async Task Send_RequestElevatorCommand_RoutesToCorrectHandler()
     {
-        var provider =  _mediatRpipeline.BuildProvider();
+         var elevator = _passengerElevatorFactory.CreateElevator(2);
+
+        var provider = _mediatRpipeline.BuildProvider(services =>
+        {
+            var mockRepo = new Mock<IElevatorRepo>();
+            mockRepo.Setup(repo => repo.GetElevator(elevator.Id)).Returns(elevator);
+            mockRepo.Setup(repo => repo.GetElevators()).Returns(new List<IElevator> {elevator} );
+            services.AddSingleton(mockRepo.Object);
+        });
+
         var mediator = _mediatRpipeline.GetMediator(provider);
 
 
@@ -23,7 +32,16 @@ public class MediatRTests
     [Fact]
     public async Task Send_GetSystemStatusQuery_RoutesToCorrectHandler()
     {
-        var provider =  _mediatRpipeline.BuildProvider();
+         var elevator = _passengerElevatorFactory.CreateElevator(2);
+
+        var provider = _mediatRpipeline.BuildProvider(services =>
+        {
+            var mockRepo = new Mock<IElevatorRepo>();
+            mockRepo.Setup(repo => repo.GetElevator(elevator.Id)).Returns(elevator);
+            mockRepo.Setup(repo => repo.GetElevators()).Returns(new List<IElevator> {elevator} );
+            services.AddSingleton(mockRepo.Object);
+        });
+        
         var mediator = _mediatRpipeline.GetMediator(provider);
 
         var result = await mediator.Send(new GetSystemStateQuery());
@@ -41,6 +59,7 @@ public class MediatRTests
         {
             var mockRepo = new Mock<IElevatorRepo>();
             mockRepo.Setup(repo => repo.GetElevator(elevator.Id)).Returns(elevator);
+            mockRepo.Setup(repo => repo.GetElevators()).Returns(new List<IElevator> {elevator} );
             services.AddSingleton(mockRepo.Object);
         });
 
@@ -56,7 +75,16 @@ public class MediatRTests
     [Fact]
     public async Task Send_InvalidCommand_ValidationBehaviourShortCircuits()
     {
-        var provider =  _mediatRpipeline.BuildProvider();
+         var elevator = _passengerElevatorFactory.CreateElevator(2);
+
+        var provider = _mediatRpipeline.BuildProvider(services =>
+        {
+            var mockRepo = new Mock<IElevatorRepo>();
+            mockRepo.Setup(repo => repo.GetElevator(elevator.Id)).Returns(elevator);
+            mockRepo.Setup(repo => repo.GetElevators()).Returns(new List<IElevator> {elevator} );
+            services.AddSingleton(mockRepo.Object);
+        });
+
         var mediator = _mediatRpipeline.GetMediator(provider);
 
         Func<Task> act = () => mediator.Send(new RequestElevatorCommand(-1, ElevatorDirection.Up));
@@ -69,8 +97,18 @@ public class MediatRTests
     {
         var mockDispatch = new Mock<IDispatchController>();
 
-        var provider = _mediatRpipeline.BuildProvider(services => services.AddSingleton(mockDispatch.Object));
+        var elevator = _passengerElevatorFactory.CreateElevator(2);
 
+        var provider = _mediatRpipeline.BuildProvider(services =>
+        {
+            var mockRepo = new Mock<IElevatorRepo>();
+            mockRepo.Setup(repo => repo.GetElevator(elevator.Id)).Returns(elevator);
+            mockRepo.Setup(repo => repo.GetElevators()).Returns(new List<IElevator> {elevator} );
+            services.AddSingleton(mockRepo.Object);
+
+            services.AddSingleton(mockDispatch.Object);
+        });
+        
         var mediator = _mediatRpipeline.GetMediator(provider);
 
         try
