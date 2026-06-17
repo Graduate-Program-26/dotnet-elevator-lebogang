@@ -1,3 +1,3 @@
 using MediatR;
 
-public record GetSystemStateQuery : IRequest<SystemState>;
+public record GetSystemStateQuery : IRequest<SystemStatusDto>;
