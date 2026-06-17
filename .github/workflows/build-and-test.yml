@@ -26,7 +26,7 @@ jobs:
 
       - name: Test
         run: dotnet test ./dotnet_elevator_lebogang.slnx --no-build --configuration Release
-          --verbosity normal
+          --verbosity normal --logger "trx"
 
       - name: Publish test results
         uses: dorny/test-reporter@v1
