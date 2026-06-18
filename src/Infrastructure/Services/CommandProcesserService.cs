@@ -41,5 +41,9 @@ public class CommandProcessorService : BackgroundService
         {
             _logger.LogError(ex,"Error processing {RequestType}.",request.GetType().Name);
         }
+        catch(OperationCanceledException)
+        {
+            
+        }
     }
 }

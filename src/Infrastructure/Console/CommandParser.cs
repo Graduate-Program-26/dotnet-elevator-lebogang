@@ -65,7 +65,7 @@ public class CommandParser
             return Fail("Destination must differ from the current floor.");
 
 
-        // create passenger to be registred to floor
+        // TODO: create passenger to be registred to floor
         var passenger = new Passenger(floor, destination);
 
         return new ParseResult<IBaseRequest>.Success(new RequestElevatorCommand(floor, direction));
