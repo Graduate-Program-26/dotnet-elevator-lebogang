@@ -81,6 +81,9 @@ public class PassengerGeneratorService : BackgroundService
 
             var direction = destination > curFloor.FloorNumber ? ElevatorDirection.Up : ElevatorDirection.Down;
 
+            var passenger = new Passenger(curFloor.FloorNumber, destination);
+            curFloor.AddWaitingPassenger(passenger);
+            
             _logger.LogDebug("Generating {Count} passenger(s) on floor {Floor} -> {Dest}.",passengerCount, curFloor.FloorNumber, destination);
 
             for (int i = 0; i < passengerCount; i++)
