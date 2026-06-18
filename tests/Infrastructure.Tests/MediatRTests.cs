@@ -2,6 +2,7 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
+
 public class MediatRTests
 {
     private readonly MediatRPipeline _mediatRpipeline = new();

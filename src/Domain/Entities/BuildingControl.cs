@@ -15,7 +15,7 @@ public class Building
 
     public void Initialise(int totalFloors, IEnumerable<IElevator> elevators)
     {
-        if(totalFloors <= 0)
+        if(totalFloors <= 1)
         {
             throw new ArgumentOutOfRangeException("Cannot initialise floor with floors less than or equal rto zero");
         }
