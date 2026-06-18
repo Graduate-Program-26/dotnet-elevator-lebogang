@@ -1,14 +1,11 @@
 using Serilog;
 
-/// <summary>
-/// Configures Serilog as the logging provider.
-/// Called from Program.cs before the host is built.
-/// Infrastructure owns this — Application never references Serilog directly.
-/// </summary>
+
 public static class SerilogConfiguration
 {
     public static void Configure()
     {
+        var sink = new InMemoryLogSink();
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Information()
             .WriteTo.Console(
@@ -19,6 +16,7 @@ public static class SerilogConfiguration
                 rollingInterval: RollingInterval.Day,
                 outputTemplate:
                 "[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}")
+            .WriteTo.Sink(sink)
             .CreateLogger();
     }
 }

@@ -30,7 +30,8 @@ public static class DependencyInjection
         services.AddSingleton<ConsoleRenderer>();
         services.AddSingleton<InputHandler>();
 
-
+        services.AddSingleton<InMemoryLogSink>();
+        
         return services;
     }
 }
