@@ -37,6 +37,27 @@ public class RepoTests
         inMemoryFloorRepo.GetFloors().Count.Should().Be(floorCount);
     }
 
+    [Fact]
+    public void FloorRepo_GetFloorWIthInvalidNumber_ThrowException()
+    {
+        var (_, _, floorRepo) = BuildSeededRepos(floorCount: 4);
+    
+        Action act = () => floorRepo.GetFloor(100);
+
+        act.Should().Throw<InvalidFloorNumberExecption>();
+    }
+
+    [Fact]
+    public void ElevatorRepo_GetElevatorById_ReturnsCorrectElevator()
+    {
+        var (building, elevatorRepo, _) = BuildSeededRepos();
+        var expected = building.Elevators.First();
+
+        var result = elevatorRepo.GetElevator(expected.Id);
+
+        result.Should().NotBeNull();
+        result!.Id.Should().Be(expected.Id);
+    }
 
     // these tests proves the singleton shared-reference guarantee
     [Fact]
@@ -49,7 +70,6 @@ public class RepoTests
         elevator.AddFloorRequest(5);
         elevator.MoveOneFloor();
 
-        // repo should reflect the mutation immediately
         var retrieved = elevatorRepo.GetElevator(elevator.Id);
         retrieved!.CurrentFloor.Should().Be(1); 
     }
