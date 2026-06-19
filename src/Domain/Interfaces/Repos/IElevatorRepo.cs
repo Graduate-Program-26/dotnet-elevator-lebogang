@@ -12,4 +12,6 @@ public interface IElevatorRepo
     IElevator? GetElevator(Guid Id);
 
     void Update(ElevatorBase elevator);
+
+    void Seed(IReadOnlyList<IElevator> elevators);
 }

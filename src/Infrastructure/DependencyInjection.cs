@@ -9,7 +9,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrustractureServices(this IServiceCollection services, IConfiguration configuration)
     {
-       //services.Configure<SimOptions>(configuration.GetSection(SimOptions.SectionName));
+       services.Configure<SimOptions>(configuration.GetSection(SimOptions.SectionName));
 
         services.AddSingleton<Channel<IBaseRequest>>(Channel.CreateBounded<IBaseRequest>( new BoundedChannelOptions(100)
         {
@@ -18,6 +18,7 @@ public static class DependencyInjection
             SingleWriter = false   // multiple producers write to it
         }));
         
+        services.AddSingleton<Building>();
         services.AddSingleton<IElevatorRepo, InMemoryElevatorRepo>();
         services.AddSingleton<IFloorRepo, InMemoryFloorRepo>();
 

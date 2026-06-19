@@ -12,4 +12,6 @@ public interface IFloorRepo
 
 
     void Update(Floor floor);
+
+    void Seed(IReadOnlyList<Floor> floors);
 }
