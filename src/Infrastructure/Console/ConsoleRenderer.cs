@@ -84,12 +84,12 @@ public class ConsoleRenderer
         var header = new StringBuilder();
         header.Append($" {"Floor",-6}");
 
-        foreach (var elevator in elevators)
+        for(int i = 1; i <= elevators.Count; i++)
         {
-            header.Append($" {VBar} {elevator.GetType().FullName,-8}");
+            header.Append($" {VBar} elevator {i,-2}");
         }
 
-        header.Append($" {VBar} {"Waiting",-8}");
+        header.Append($" {VBar} {"Waiting",-4}");
 
         sb.Append(PadRow(header.ToString(), frameWidth));
         return sb.ToString();
