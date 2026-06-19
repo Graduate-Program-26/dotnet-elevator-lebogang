@@ -80,7 +80,13 @@ public abstract class ElevatorBase : IElevator
             throw new ElevatorCapacityException(MaxCapacity);
         }
 
-        CurrentCapacity += passengerCount;
+        for (int i = 0; i < passengerCount; i++)
+        {
+            var passenger = new Passenger(CurrentFloor, CurrentFloor);
+            passenger.Board();
+            _onboardPassengers.Add(passenger);
+        }
+            
     }
 
     public void DisembarkPassengers(int passengerCount)
