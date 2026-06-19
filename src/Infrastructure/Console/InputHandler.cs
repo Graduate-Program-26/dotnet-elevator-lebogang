@@ -13,27 +13,7 @@ public class InputHandler
     private readonly StringBuilder _stringBuilder = new();
 
 
-    private static readonly string HelpText = """
-        ┌─────────────────────────────────────────────────┐
-        │  Available commands                             │
-        │                                                 │
-        │  call [floor] [up|down] [destination]           │
-        │    e.g. call 3 up 7                             │
-        │         calls elevator to floor 3,              │
-        │         passenger going up to floor 7           │
-        │                                                 │
-        │  status                                         │
-        │    full building snapshot                       │
-        │                                                 │
-        │  status [elevator-guid]                         │
-        │    detailed view of one elevator                │
-        │                                                 │
-        │  sim on | sim off                               │
-        │    toggle automatic passenger generation        │
-        │                                                 │
-        │  quit    shut down the simulation               │
-        └─────────────────────────────────────────────────┘
-        """;
+
 
     public InputHandler(Channel<IBaseRequest> channel, CommandParser commandParser, IHostApplicationLifetime lifetime, ILogger<InputHandler> logger)
     {
