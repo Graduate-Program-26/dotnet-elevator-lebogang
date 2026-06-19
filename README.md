@@ -26,17 +26,13 @@ The project demonstrates:
 The solution follows Onion Architecture — dependency arrows point inward. Outer
 layers know about inner layers; inner layers know nothing about outer layers.
 
-```
-┌─────────────────────────────────────────┐
-│  Presentation (Console entry point)      │
-├─────────────────────────────────────────┤
-│  Infrastructure (repos, services, DI)    │
-├─────────────────────────────────────────┤
-│  Application (CQRS handlers, behaviours) │
-├─────────────────────────────────────────┤
-│  Domain (entities, enums, interfaces)    │
-└─────────────────────────────────────────┘
-```
+- Presentation (Console entry point)
+-  Infrastructure (repos, services, DI) 
+- Application (CQRS handlers, behaviours) 
+- TDD from the domain layer outward — 40+ tests across domain, application, and
+  infrastructure layers
+-  Domain (entities, enums, interfaces) 
+
 
 ### Key patterns
 
