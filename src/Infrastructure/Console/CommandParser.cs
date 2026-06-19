@@ -3,11 +3,11 @@ using MediatR;
 public class CommandParser
 {
     // dictionary isn't storing raw data; it is storing a collection of executable functions.
-    private readonly Dictionary<string, Func<string[], ParseResult<IBaseRequest>>> _commandRegistry;
+    private readonly Dictionary<string, Func<string[], ParseResult<IBaseRequest[]>>> _commandRegistry;
 
     public CommandParser()
     {
-        _commandRegistry = new Dictionary<string, Func<string[], ParseResult<IBaseRequest>>>(StringComparer.OrdinalIgnoreCase)
+        _commandRegistry = new Dictionary<string, Func<string[], ParseResult<IBaseRequest[]>>>(StringComparer.OrdinalIgnoreCase)
         {
             ["call"] = ParseCallElevator,
             ["status"] = ParseSystemStatus,
@@ -16,11 +16,11 @@ public class CommandParser
         };
     }
 
-    public ParseResult<IBaseRequest> Parse(string input)
+    public ParseResult<IBaseRequest[]> Parse(string input)
     {
         if(string.IsNullOrWhiteSpace(input))
         {
-            return new ParseResult<IBaseRequest>.Failure("No command entered");
+            return Fail("No command entered");
         }
 
         var commandTokens =  input.Trim().ToLowerInvariant().Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -29,7 +29,7 @@ public class CommandParser
 
         if(!_commandRegistry.TryGetValue(action, out var factory))
         {
-            return new ParseResult<IBaseRequest>.Failure($"Unknown command '{action}' ");
+            return Fail($"Unknown command '{action}' ");
         }
 
         // a factory is an object or method responsible for creating other objects.
@@ -41,7 +41,7 @@ public class CommandParser
     // mapping string commands that are parsed to the rest of the infra
     
 
-    private static ParseResult<IBaseRequest> ParseCallElevator(string[] commandTokens)
+    private static ParseResult<IBaseRequest[]> ParseCallElevator(string[] commandTokens)
     {
         if (commandTokens.Length != 4)
             return Fail("Usage: call [floor] [up|down] [destination]");
@@ -64,39 +64,46 @@ public class CommandParser
         if (destination == floor)
             return Fail("Destination must differ from the current floor.");
 
-
-        // create passenger to be registred to floor
-        var passenger = new Passenger(floor, destination);
-
-        return new ParseResult<IBaseRequest>.Success(new RequestElevatorCommand(floor, direction));
+        return new ParseResult<IBaseRequest[]>.Success(new IBaseRequest[]
+        {
+            new RegisterPassengerCommand(floor, destination),
+            new RequestElevatorCommand(floor, direction)
+        });
     }
 
-    private static ParseResult<IBaseRequest> ParseSystemStatus(string[] commandTokens)
+    private static ParseResult<IBaseRequest[]> ParseSystemStatus(string[] commandTokens)
     {
-        if(commandTokens.Length == 1) return new ParseResult<IBaseRequest>.Success(new GetSystemStateQuery());
+        if(commandTokens.Length == 1) return Single(new GetSystemStateQuery());
 
         if(!Guid.TryParse(commandTokens[1], out var elevatorId)) return Fail($" '{commandTokens}' is not a valid elevatorId ");
 
-        return new ParseResult<IBaseRequest>.Success(new GetElevatorStateQuery(elevatorId));
+        return Single(new GetElevatorStateQuery(elevatorId));
 
     }
 
-    private static ParseResult<IBaseRequest> ParseSimToggle(string[] commandTokens)
+    private static ParseResult<IBaseRequest[]> ParseSimToggle(string[] commandTokens)
     {
         if (commandTokens.Length != 2) return Fail("Usage: sim [on|off]");
 
         return commandTokens[1].ToLowerInvariant() switch
             {
-                "on"  => new ParseResult<IBaseRequest>.Success(new ToggleSimCommand(Enabled: true)),
-                "off" => new ParseResult<IBaseRequest>.Success(new ToggleSimCommand(Enabled: false)),
+                "on"  => Single(new ToggleSimCommand(Enabled: true)),
+                "off" => Single(new ToggleSimCommand(Enabled: false)),
                 _     => Fail($"'{commandTokens[1]}' must be 'on' or 'off'.")
             };
     }
 
-    private static ParseResult<IBaseRequest> ParseQuit(string[] commandTokens)
+
+    private static ParseResult<IBaseRequest[]> ParseQuit(string[] commandTokens)
     {
-        return new ParseResult<IBaseRequest>.Success(new Quit());
+        return Single(new Quit());
     }
+
+    private static ParseResult<IBaseRequest[]>.Success Single(IBaseRequest request)
+        => new(new IBaseRequest[] { request });
+
+    private static ParseResult<IBaseRequest[]>.Failure Fail(string message)
+        => new(message);
 
     private static bool TryParseDirection(string token, out ElevatorDirection direction)
     {
@@ -114,5 +121,4 @@ public class CommandParser
         }
     }
 
-    private static ParseResult<IBaseRequest> Fail(string message) => new ParseResult<IBaseRequest>.Failure(message);
 }

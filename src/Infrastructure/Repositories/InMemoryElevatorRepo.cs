@@ -1,25 +1,40 @@
+using System.Collections.Concurrent;
+
 public class InMemoryElevatorRepo : IElevatorRepo
 {
-    private List<IElevator> _elevators = new();
+     private readonly ConcurrentDictionary<Guid, IElevator> _elevators = new();
+
     
-    public InMemoryElevatorRepo(List<IElevator> elevators)
+    public InMemoryElevatorRepo()
     {
-        _elevators = elevators;
+        
     }
 
-
+  public InMemoryElevatorRepo(IEnumerable<IElevator> elevators)
+    {
+        Seed(elevators.ToList());
+    }
     public IElevator? GetElevator(Guid Id)
     {
-       return _elevators.FirstOrDefault(elevator => elevator.Id == Id);
+       return _elevators.TryGetValue(Id, out var elevator) ? elevator : null;
     }
 
     public IReadOnlyList<IElevator> GetElevators()
     {
-        return _elevators;
+        return _elevators.Values.ToList().AsReadOnly();
     }
 
     public void Update(ElevatorBase elevator)
     {
         
     }
+
+    public void Seed(IReadOnlyList<IElevator> elevators)
+    {
+        _elevators.Clear();
+
+        foreach (var elevator in elevators)
+            _elevators.TryAdd(elevator.Id, elevator);
+    }
+
 }
