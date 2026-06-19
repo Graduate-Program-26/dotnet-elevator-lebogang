@@ -22,7 +22,6 @@ public class RenderLoopService : BackgroundService
     {
         Console.CursorVisible = false;
         Console.Clear();
-        
         while (!stoppingToken.IsCancellationRequested)
         {
 
