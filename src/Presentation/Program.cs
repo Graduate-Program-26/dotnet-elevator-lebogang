@@ -24,9 +24,6 @@ try
                     Serilog.Events.LogEventLevel.Warning)
                 .MinimumLevel.Override("System",    
                     Serilog.Events.LogEventLevel.Warning)
-                .WriteTo.Console(outputTemplate:
-                    "[{Timestamp:HH:mm:ss} {Level:u3}] " +
-                    "{Message:lj}{NewLine}{Exception}")
                 .WriteTo.File(
                     path: "logs/elevator-.log",
                     rollingInterval: RollingInterval.Day,

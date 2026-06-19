@@ -26,11 +26,11 @@ public static class DependencyInjection
         services.AddHostedService<CommandProcessorService>();
         services.AddHostedService<SimBackgroundService>();
         services.AddHostedService<PassengerGeneratorService>();
+        services.AddHostedService<RenderLoopService>(); 
 
         services.AddSingleton<CommandParser>();
         services.AddSingleton<ConsoleRenderer>();
         services.AddSingleton<InputHandler>();
-
         services.AddSingleton<InMemoryLogSink>();
         
         return services;

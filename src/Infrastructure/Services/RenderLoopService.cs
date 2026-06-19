@@ -21,7 +21,8 @@ public class RenderLoopService : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         Console.CursorVisible = false;
-
+        Console.Clear();
+        
         while (!stoppingToken.IsCancellationRequested)
         {
 
