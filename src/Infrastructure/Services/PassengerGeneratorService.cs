@@ -16,20 +16,20 @@ public class PassengerGeneratorService : BackgroundService
     // toggled by ToggleSimulationCommand via a thread-safe flag (volatile)
     private volatile bool _enabled;
 
-    public PassengerGeneratorService(Channel<IBaseRequest> channel,IFloorRepo floorRepo,IOptions<SimOptions> options,ILogger<PassengerGeneratorService> logger)
+    public PassengerGeneratorService(Channel<IBaseRequest> channel, IFloorRepo floorRepo, IOptions<SimOptions> options, ILogger<PassengerGeneratorService> logger)
     {
-        _channel  = channel;
+        _channel = channel;
         _floorRepo = floorRepo;
-        _options  = options;
-        _logger   = logger;
-        _enabled  = options.Value.PassengerGenerationEngine.AutoGen;
+        _options = options;
+        _logger = logger;
+        _enabled = options.Value.PassengerGenerationEngine.AutoGen;
     }
 
-   
+
     public void SetEnabled(bool enabled)
     {
         _enabled = enabled;
-        _logger.LogInformation("Passenger generation {Status}.",enabled ? "enabled" : "disabled");
+        _logger.LogInformation("Passenger generation {Status}.", enabled ? "enabled" : "disabled");
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -44,9 +44,13 @@ public class PassengerGeneratorService : BackgroundService
                 {
                     await GeneratePassengersAsync(stoppingToken);
                 }
-                catch (Exception ex) when (ex is not OperationCanceledException)
+                catch (ArgumentOutOfRangeException ex)
                 {
-                    _logger.LogError(ex, "Error generating passengers.");
+                    _logger.LogError(ex,"Invalid floor during passenger generation");
+                }
+                catch (InvalidPassengerAddedToFloor ex)
+                {
+                    _logger.LogError(ex,"Passenger source floor mismatch during generation.");
                 }
             }
 
@@ -60,7 +64,7 @@ public class PassengerGeneratorService : BackgroundService
     /// </summary>
     private async Task GeneratePassengersAsync(CancellationToken stoppingToken)
     {
-        var opts   = _options.Value.PassengerGenerationEngine;
+        var opts = _options.Value.PassengerGenerationEngine;
         var floors = _floorRepo.GetFloors().ToList();
 
         if (floors.Count < 2) return;
@@ -83,8 +87,8 @@ public class PassengerGeneratorService : BackgroundService
 
             var passenger = new Passenger(curFloor.FloorNumber, destination);
             curFloor.AddWaitingPassenger(passenger);
-            
-            _logger.LogDebug("Generating {Count} passenger(s) on floor {Floor} -> {Dest}.",passengerCount, curFloor.FloorNumber, destination);
+
+            _logger.LogDebug("Generating {Count} passenger(s) on floor {Floor} -> {Dest}.", passengerCount, curFloor.FloorNumber, destination);
 
             for (int i = 0; i < passengerCount; i++)
             {

@@ -46,9 +46,23 @@ try
 
     await host.RunAsync();
 }
-catch (Exception ex)
+catch (OperationCanceledException ex)
 {
     Log.Fatal(ex, "ElevatorOS terminated unexpectedly.");
+}
+catch (HostAbortedException)
+{
+    Log.Information("Host aborted.");
+}
+catch (InvalidOperationException ex)
+{
+    // DI registration errors, missing services, seeding failures
+    Log.Fatal(ex, "ElevatorOS failed to start — configuration error.");
+}
+catch (ArgumentException ex)
+{
+    // invalid configuration values (negative floors, zero elevators etc)
+    Log.Fatal(ex, "ElevatorOS failed to start — invalid configuration.");
 }
 finally
 {

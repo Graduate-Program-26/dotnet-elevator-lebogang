@@ -32,10 +32,20 @@ public class SimBackgroundService : BackgroundService
             {
                 await Tick(stoppingToken);
             }
-           catch (Exception ex) when (ex is not OperationCanceledException)
+           catch (InvalidOperationException ex)
             {
-                // log bad ticks but keep the simulation running
-                _logger.LogError(ex, "Error during simulation tick.");
+                // elevator or floor in invalid state for this operation
+                // log and continue — one bad tick should not stop the simulation
+                _logger.LogError(ex,
+                    "Elevator state error during simulation tick. Continuing.");
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                // floor number out of building range
+                // likely a configuration mismatch — log clearly
+                _logger.LogError(ex,
+                    "Floor out of range during simulation tick. " +
+                    "Check building configuration.");
             }
 
             await Task.Delay(_options.Value.TickInterval, stoppingToken);
